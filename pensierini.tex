@@ -1,0 +1,308 @@
+\documentclass[10pt,oneside]{amsproc}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{comment}
+\usepackage[alphabetic]{amsrefs}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{datetime2} 
+\usepackage[colorlinks=true,linkcolor=blue,]{hyperref}
+
+\usepackage[a4paper,margin=30mm]{geometry}
+\usepackage{stackengine}
+\usepackage{scalerel}
+\usepackage{mathtools}
+\usepackage{calc}
+\usepackage{amsthm}
+\usepackage{thmtools}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{mathrsfs}
+\usepackage{euscript}
+% \def\EuScript#1{\mathscr#1}
+% \usepackage{fourier-orns}
+% \usepackage{palatino}
+\usepackage{mathpazo} % add possibly `sc` and `osf` options
+%\usepackage{eulervm}
+%\usepackage{bbm}
+%\usepackage{latexsym}
+% \usepackage{mathrsfs}
+%\usepackage{stmaryrd}
+\usepackage{stix}
+\usepackage{dsfont}
+% \newcommand*{\TakeFourierOrnament}[1]{{%
+% \fontencoding{U}\fontfamily{futs}\selectfont\char#1}}
+% \renewcommand*{\danger}{\TakeFourierOrnament{66}}
+\parindent0ex
+\parskip1.2ex
+\makeatletter
+\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
+\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
+\makeatother
+
+\newcommand{\mylabel}[1]{{#1}\hfill}
+\renewenvironment{itemize}
+  {\begin{list}{$\cdot$}{%
+  \setlength{\parskip}{0mm}
+  \setlength{\topsep}{.4\baselineskip}
+  \setlength{\rightmargin}{0mm}
+  \setlength{\listparindent}{0mm}
+  \setlength{\itemindent}{0mm}
+  \setlength{\labelwidth}{3ex}
+  \setlength{\itemsep}{.2\baselineskip}
+  \setlength{\parsep}{.2\baselineskip}
+  \setlength{\partopsep}{0mm}
+  \setlength{\labelsep}{1ex}
+  \setlength{\leftmargin}{\labelwidth+\labelsep}
+  \let\makelabel\mylabel}}{%
+\end{list}}
+
+\declaretheoremstyle[
+  headfont=\normalfont\bfseries,
+  notefont=\bfseries,
+  notebraces={(}{)},
+  bodyfont=\normalfont,
+  postheadspace=1em,
+  mdframed={
+  outerlinewidth=1pt,
+  linecolor=gray!20,
+  roundcorner = 1ex,    
+  backgroundcolor=gray!10, 
+  innerleftmargin=1ex,
+  leftmargin=-1ex,
+  innerrightmargin=1ex,
+  rightmargin=-1ex,
+  innertopmargin=1.5ex, 
+  innerbottommargin=1ex, 
+  skipabove=3ex,
+  skipbelow=1ex}, 
+]{mystyle}
+
+\declaretheorem[style=mystyle]%
+{theorem}
+\declaretheorem[style=mystyle,sibling=theorem]%
+{lemma,proposition,fact,corollary,definition,remark,example,claim,question}
+
+\let\proof\relax
+\declaretheoremstyle[
+  spaceabove=6pt, 
+  spacebelow=6pt, 
+  headfont=\normalfont\itshape, 
+  bodyfont = \normalfont,
+  postheadspace=1em, 
+  qed=\qedsymbol, 
+  headpunct={.}]
+{myproof} 
+\declaretheorem[style=myproof, unnumbered]{proof}
+
+\renewcommand*{\emph}[1]{%
+   \smash{\tikz[baseline]\node[rectangle, fill=teal!25, rounded corners, inner xsep=0.5ex, inner ysep=0.2ex, anchor=base, minimum height = 2.7ex]{\strut #1};}}
+
+
+
+%%%%%%% GETCOMMIT
+\newcommand\dotGitHEAD{}
+\newcommand\branch{}
+\newcommand\commit{}
+
+
+\makeatletter\let\myfilehandle\@inputcheck\makeatother
+
+\openin\myfilehandle=.git/HEAD\relax
+
+\begingroup\endlinechar-1
+  \global\read\myfilehandle to \dotGitHEAD
+\endgroup
+\closein\myfilehandle
+
+\newcommand\GetBranch{}
+\def\GetBranch ref: refs/heads/#1\relax{\renewcommand{\branch}{#1}}
+
+\expandafter\GetBranch\dotGitHEAD\relax
+
+\makeatother
+%%%%%%%%%%%%%%
+
+\linespread{1.25}
+\title{S1-prime types}
+
+\author{C. L. C. L. Polymath}
+\begin{document}
+
+\hfill\texttt{Branch:\ \branch\ \ \DTMnow}\bigskip
+\maketitle
+\raggedbottom
+
+\newcommand\questionsign[1][2ex]{%
+  \renewcommand\stacktype{L}%
+  \scaleto{\stackon[-.6pt]{\color{red}$\triangle$}{\color{red}\bfseries\small ?}}{#1}%
+}
+
+\newcommand\dangersign[1][2ex]{%
+  \renewcommand\stacktype{L}%
+  \scaleto{\stackon[-.6pt]{\color{red}$\triangle$}{\color{red}\bfseries\small !}}{#1}%
+}
+\def\equivL{\stackrel{\smash{\scalebox{.5}{\rm L}}}{\equiv}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}\label{intro}
+
+A type $p(x)\subseteq L({\EuScript U})$ is \emph{S1-prime\/} over $A$ if it is invariant over $A$ and for every $\varphi(x\,z)\in L(A)$ and every sequence $\langle a_i:i<\omega\rangle$ of $A$-indiscernibles if 
+
+\def\ceq#1#2#3{\parbox[t]{20ex}{$\displaystyle #1$}\parbox[t]{6ex}{$\displaystyle\hfil #2$}{$\displaystyle #3$}}
+
+\ceq{\hfill p(x)}{\rightarrow}{\varphi(x\,;a_0)\vee\varphi(x\,;a_1)}
+
+then $p(x)\rightarrow\varphi(x\,;a_0)$.
+
+Let \emph{${\rm cd}_A(x)$\/} be the type containing the formulas $\varphi(x\,;b)$, where $\varphi(x\,;z)\in L(A)$ and $b\in{\EuScript U}^{|z|}$, such that $\neg\varphi(x\,;b)$ divides over $A$.
+That is, the type $\{\neg\varphi(x\,;b_i):i\in\omega\}$ is inconsistent for some $A$-indiscernible sequence $\bar b=\langle b_i:i\in\omega\rangle$, with $b_0\equiv_Ab$.
+
+\begin{fact}
+  The type ${\rm cd}_A(x)$ is consistent; invariant over $A$; and closed under logical consequences.
+\end{fact}
+
+\begin{proof}
+  First, we verify that ${\rm cd}_A(x)$ is closed under conjunctions.
+  Let $\bar b$ and $\bar c$ be two sequences of indiscernbles over $A$ such that $\big\{\neg\varphi(x\,;b_i):i\in\omega\big\}$ and $\big\{\neg\psi(x\,;c_i):i\in\omega\big\}$ are inconstistent.
+  Let  $\langle b'_i,c'_i:i\in\omega\rangle$ be a sequence of indiscernibles with the same EM-type over $A$ as $\langle b_i,c_i:i\in\omega\rangle$.
+  We claim that $\big\{\neg\big[\varphi(x\,;b'_i)\wedge\psi(x\,;c'_i)\big]:i\in\omega\big\}$ is inconsistent.
+  In fact, otherwise at least one between $\big\{\neg\varphi(x\,;b'_i):i\in\omega\big\}$ and $\big\{\neg\psi(x\,;c'_i):i\in\omega\big\}$ would be consistent contradicting the requirement on the EM-type.
+
+  Now, we verify that ${\rm cd}_A(x)$ is closed under logical consequences.
+  In fact, if $\varphi(x\,;b)\rightarrow\psi(x\,;b)$ and $\neg\varphi(x\,;b)$ divides, then also $\neg\psi(x\,;b)$ divides.
+
+  Finally, invariance over $A$ is clear by the definition and consistency follows from what proved above (as $\top$ does not divides).
+\end{proof}
+
+\begin{lemma} 
+  The type ${\rm cd}_A(x)$ is S1-prime over $A$.
+\end{lemma}
+
+\begin{proof}
+  Let $\langle a_i:i<\omega\rangle$ be a sequence of $A$-indiscernibles such that ${\rm cd}_A(x)\nrightarrow\varphi(x\,;a_0)$.
+  By the definition of ${\rm cd}_A(x)$, the type $\big\{\neg\varphi(x\,;a_i):i<\omega\big\}$ is consistent.
+  Then the sequence  $\langle a_{2i},a_{2i+1}:i<\omega\rangle$ witnesss that $\neg[\varphi(x\,;a_0)\vee\varphi(x\,;a_1)]$ does not divide over $A$.
+  Then $\varphi(x\,;a_0)\vee\varphi(x\,;a_1)$ does not belongs to ${\rm cd}_A(x)$.
+  By the fact above ${\rm cd}_A(x)\nrightarrow\varphi(x\,;a_0)\vee\varphi(x\,;a_1)$.
+\end{proof}
+
+
+\begin{lemma} 
+  Let $p(x)$ be S1-prime over $A$.
+  Then $p(x)\rightarrow{\rm cd}_A(x)$.
+\end{lemma}
+
+\begin{proof}
+  It suffices to show that if $\neg\varphi(x, b)$ divides over $A$, then  $p(x)\rightarrow\varphi(x\,;b)$.
+  Pick a sequence $\bar b$ of indiscernibles over $A$ such that $b_0\equiv_Ab$ and $\{\neg\varphi(x\,;b_i):i\in\omega)\}$ is inconsistent.
+  Let $n$ be maximal such that $p(x)\nrightarrow\psi(x\,;b_{\restriction n})$, where
+  
+   \ceq{\hfill\psi(x\,;b_{\restriction n})}{=}{\bigvee_{i<n}\varphi(x\,;b_i)}
+  
+   If we can prove that $n=0$ then we conclude that $p(x)\rightarrow\varphi(x\,;b_0)$ and we are done by $A$-invariance.
+   Suppose for a contradiction that $n>0$.
+   Then, writing $I$ for $[n,2n)$, we have
+
+  \ceq{\hfill p(x)}{\rightarrow}{\psi(x\,;b_{\restriction n})\vee\psi(x\,;b_{\restriction I}).}
+ 
+  By S1-primality $p(x)\rightarrow\psi(x\,;b_{\restriction n})$ which contradicts the choice of $n$.
+\end{proof}
+
+
+
+% Let \emph{${\rm cnqi}_A(x)$\/} be the type containing the formulas $\varphi(x\,;b)$, where $\varphi(x\,;z)\in L(A)$ and $b\in{\EuScript U}^{|z|}$, such that $\neg\varphi(x\,;b)$ is not quasi-invariant over $A$.
+% That is, the type $\{\neg\varphi(x\,;b_i):i\in\omega\}$ is inconsistent for some sequence $\bar b=\langle b_i:i\in\omega\rangle$, with $b_i\equiv_Ab$.
+
+% \begin{fact}
+%   The type ${\rm cnqi}_A(x)$ is consistent; invariant over $A$; and closed under logical consequences.
+% \end{fact}
+
+
+% \begin{proof}
+%   First, we verify that ${\rm cnqi}_A(x)$ is closed under conjunctions.
+%   Pick $\varphi(x\,;b)$ and $\psi(x\,;c)$
+  
+  
+%   $\bar b$ and $\bar c$ be two sequences as above and such that $\big\{\neg\varphi(x\,;b_i):i\in\omega\big\}$ and $\big\{\neg\psi(x\,;c_i):i\in\omega\big\}$ are inconstistent.
+%   Let  $c'=\langle b'_i,c'_i:i\in\omega\rangle$ be a sequence of indiscernibles with the same EM-type over $A$ as $\langle b_i,c_i:i\in\omega\rangle$.
+%   We claim that $\big\{\neg[\varphi(x\,;b'_i)\wedge\varphi(x\,;c'_i)]:i\in\omega\big\}$ is inconsistent.
+%   In fact, otherwise at least one between $\big\{\neg\varphi(x\,;b'_i):i\in\omega\big\}$ and $\big\{\neg\psi(x\,;c'_i):i\in\omega\big\}$ would be consistent contradicting the requirement on the EM-type.
+
+%   Now, we verify that ${\rm cd}_A(x)$ is closed under logical consequences.
+%   In fact, if $\varphi(x\,;b)\rightarrow\psi(x\,;b)$ and $\neg\varphi(x\,;b)$ divides, then also $\neg\psi(x\,;b)$ divides.
+
+%   Finally, invariance over $A$ is clear by the definition and consistency follows from what proved above (as $\top$ does not divides).
+% \end{proof}
+
+We say that a relation $R(x\,;y)$ is stable if there is no infinite sequence $\langle a_i,b_i:i\in\omega\rangle$
+
+\ceq{\hfill i<j}{\Leftrightarrow}{R(a_i\,;b_j)}
+
+We say that $R(x\,;y)$ is an equation if there is no infinite sequence such that 
+
+\ceq{\hfill i<j}{\Rightarrow}{R(a_i\,;b_j)}
+
+\ceq{\hfill i=j}{\Rightarrow}{\llap{$\neg$} R(a_i\,;b_j)}
+
+If $R$ is invariant over some set $A$, we can require that  $\langle a_i,b_i:i\in\omega\rangle$ is indiscernible.
+  
+\begin{fact}
+  Let $p(x)\subseteq L({\EuScript U})$ be an $\omega_1$-prime $A$-invariant type.
+  Let $\varphi(x,z)\in L(A)$.
+  Then the relation 
+
+  \ceq{\hfill R(a\,;b)}{\Leftrightarrow}{p(x)\rightarrow\varphi(x,a)\vee\varphi(x,b)}
+
+  is equational.
+\end{fact}
+
+\begin{proof}
+  Assume $R(a\,;b)$ is not equational.
+  By compactness and invariance we can assume that there is an $A$-indiscernible sequence $\langle a_i,b_i:i\in\omega_1\rangle$ such that for every $i<j$
+
+  \ceq{1.\hfill p(x)}{\rightarrow}{\varphi(x\,;a_i)\vee\varphi(x\,;b_j)}
+
+  \ceq{2.\hfill p(x)}{\nrightarrow}{\varphi(x\,;a_i)\vee\varphi(x\,;b_i)}
+
+  But $\omega_1$-primeness implies that $p(x)\rightarrow\varphi(x\,;a_i)$ for some $i$ which contradicts (2).
+\end{proof}
+
+
+
+A type is definable if for every $\varphi(x\,;z)\in L$ the set $\{a:p(x)\rightarrow\varphi(x\,;a)\}$ is type-definable.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Pseudofinite random structures}\label{random}
+
+Let $\Omega,\Pr$ be a finite probability space and let $M$ be a finite structure of signature $L_{\sf H}$.
+Let $R= M^\Omega$ be the set of $M$-valued random variables.
+We consider $R$ as a structure of signature $L_{\sf R}$ that contains the same function of $L_{\sf H}$.
+Consider the two-sorted expansion $\langle M,R,I\rangle$ in the signature ${\EuScript L}$ that contains $L_{\sf H}$, $L_{\sf R}$, $L_{\sf I}$ and for every partitioned formula $\varphi(x\,;z)\in L_{\sf H}$ a function symbol of sort ${\sf R}^{|x|}\times{\sf H}^{|z|}\to I$.
+Their interpretation is the function
+
+\ceq{\hfill X,z}{\mapsto}{\Pr\varphi(X\,;z)}
+
+Given an $L_{\sf H}$-theory $T$ with arbitrarily large finite models we define 
+
+\ceq{\hfill T^{\sf R}}{=}{\big\{\varphi\in{\EuScript L}\ :\ \langle M,R,I\rangle\models\varphi\textrm{ for all sufficiently large }M,R\big\}}
+
+
+\end{document}
